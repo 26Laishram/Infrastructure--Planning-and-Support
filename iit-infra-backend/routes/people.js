@@ -1,24 +1,32 @@
-const express = require('express');
-const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const Profile = require('../models/Profile');
-const { authenticateToken, requireAdmin } = require('../middlewares/auth');
+import express from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import Profile from "../models/Profile.js";
+import { authenticateToken, requireAdmin } from "../middlewares/auth.js";
 
-// Multer configuration for file storage
+const router = express.Router();
+
+// Ensure uploads folder exists
+const uploadDir = 'uploads/';
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+// Multer configuration
 const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'uploads/'); // make sure uploads/ folder exists
-  },
-  filename(req, file, cb) {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`); // unique filename with extension
-  }
+  destination(req, file, cb) { cb(null, uploadDir); },
+  filename(req, file, cb) { cb(null, `${Date.now()}${path.extname(file.originalname)}`); }
 });
 
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  fileFilter(req, file, cb) {
+    if (!file.mimetype.startsWith('image/')) cb(new Error('Only images allowed!'));
+    else cb(null, true);
+  },
+  limits: { fileSize: 2 * 1024 * 1024 }
+});
 
-
-// GET all people, or filter by role
+// GET all profiles (optional filter by role)
 router.get('/', async (req, res) => {
   const { role } = req.query;
   const query = role ? { role } : {};
@@ -26,63 +34,47 @@ router.get('/', async (req, res) => {
   res.json(profiles);
 });
 
-// POST endpoint to add a profile with photo upload
-router.post(
-  '/',
-  authenticateToken,
-  requireAdmin,
-  upload.single('photo'),  // handle single file upload under field 'photo'
-  async (req, res) => {
-    try {
-      const { name, title, role, email, website } = req.body;
-      // If file uploaded, save file path in photo field, else empty string
-      const photo = req.file ? `/uploads/${req.file.filename}` : '';
+// POST create profile
+router.post('/', authenticateToken, requireAdmin, upload.single('photo'), async (req, res) => {
+  try {
+    const { name, title, role, email, website } = req.body;
+    if (!name || !title || !role || !email) return res.status(400).json({ error: "All required fields must be provided" });
 
-      const profile = new Profile({ name, title, role, email, website, photo });
-      await profile.save();
+    const photo = req.file ? `/uploads/${req.file.filename}` : '';
+    const profile = new Profile({ name, title, role, email, website, photo });
+    await profile.save();
 
-      res.status(201).json(profile);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+    res.status(201).json(profile);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-);
+});
 
-// GET profile by id
+// GET profile by ID
 router.get('/:id', async (req, res) => {
   try {
     const profile = await Profile.findById(req.params.id);
     if (!profile) return res.status(404).json({ error: "Profile not found" });
     res.json(profile);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
-// PUT update profile by id with optional photo upload
-router.put(
-  '/:id',
-  authenticateToken,
-  requireAdmin,
-  upload.single('photo'),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const updateData = { ...req.body };
+// PUT update profile by ID
+router.put('/:id', authenticateToken, requireAdmin, upload.single('photo'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
+    if (req.file) updateData.photo = `/uploads/${req.file.filename}`;
 
-      // If new photo uploaded, update photo path
-      if (req.file) {
-        updateData.photo = `/uploads/${req.file.filename}`;
-      }
+    const updatedProfile = await Profile.findByIdAndUpdate(id, updateData, { new: true });
+    if (!updatedProfile) return res.status(404).json({ error: "Profile not found" });
 
-      const updatedProfile = await Profile.findByIdAndUpdate(id, updateData, { new: true });
-      if (!updatedProfile) return res.status(404).json({ error: "Profile not found" });
-
-      res.json(updatedProfile);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
+    res.json(updatedProfile);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-);
+});
 
-module.exports = router;
+export default router;

@@ -1,7 +1,7 @@
 // middlewares/auth.js
-const jwt = require('jsonwebtoken');
+import jwt from "jsonwebtoken";
 
-const authenticateToken = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) return res.sendStatus(401);
@@ -13,11 +13,9 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-const requireAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
+export const requireAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Admin access required' });
   }
   next();
 };
-
-module.exports = { authenticateToken, requireAdmin };

@@ -20,7 +20,7 @@ function EditProfile({ profileId, onClose, onUpdate }) {
 
   // Fetch existing profile
   useEffect(() => {
-    fetch(`http://localhost:5001/api/people/${profileId}`)
+    fetch(`/api/people/${profileId}`)
       .then(res => res.json())
       .then(profile => {
         setFormData(profile);
@@ -57,11 +57,10 @@ function EditProfile({ profileId, onClose, onUpdate }) {
       const token = user?.token;
       console.log("Token:", user?.token);
 
-
-      const res = await fetch(`http://localhost:5001/api/people/${profileId}`, {
+      const res = await fetch(`/api/people/${profileId}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`, // Do NOT set Content-Type
+          Authorization: `Bearer ${token}`,
         },
         body: data,
       });
@@ -97,7 +96,7 @@ function EditProfile({ profileId, onClose, onUpdate }) {
           />
         ) : formData.photo ? (
           <img
-            src={`http://localhost:5001${formData.photo}`}
+            src={`${formData.photo}`}
             alt={`Profile of ${formData.name}`}
             style={{ width: "170px", height: "220px", objectFit: "cover", borderRadius: "8px" }}
           />
@@ -122,8 +121,6 @@ function EditProfile({ profileId, onClose, onUpdate }) {
 
       {/* <label>Title</label> */}
       <input placeholder="Title" name="title" value={formData.title} onChange={handleChange} />
-
-      {/* <label>Role</label> */}
       <select
           name="role"
           value={formData.role}

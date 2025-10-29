@@ -9,11 +9,12 @@ import ProtectedRoute from './Components/ProtectedRoute.jsx';
 import LoginPage from './Components/LoginPage.jsx';
 import RegistrationPage from './Components/RegistrationPage.jsx';
 import HeaderWithLogout from './Components/HeaderWithLogout.jsx';
+import Home from "./Components/Home.jsx";
 
 
 // import LoginPage from './Components/LoginPage.jsx';
 
-const Home = () => <h1>Public Home Page</h1>;
+// const Home = () => <h1>Public Home Page</h1>;
 const UserDashboard = () => <h1>Admin Dashboard - Protected User Section</h1>;
 function App() {
   return (
@@ -32,9 +33,7 @@ function App() {
         </aside>
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<div>Welcome to Home Page
-              us exercitationem tempora corrupti dolore vel laborum, sint possimus reprehenderit ab voluptatum quas eligendi dolor nostrum hic similique inventore voluptas nemo consequatur quae explicabo perspiciatis? Culpa, nobis.
-            </div>} />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/people" element={<People />} />
             <Route

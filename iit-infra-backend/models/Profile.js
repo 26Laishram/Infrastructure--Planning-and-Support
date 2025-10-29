@@ -6,6 +6,7 @@ const ProfileSchema = new mongoose.Schema({
   role: String,  
   email: String,
   website: String,
+  responsibilities: String,
   photo: String
 });
 

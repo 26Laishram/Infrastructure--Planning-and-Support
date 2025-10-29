@@ -1,36 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
 import PeopleCategories from "./PeopleCategories";
 import EditProfile from "./EditProfile";
-import { useAuth } from './AuthProvider'; 
+import { useAuth } from "./AuthProvider";
+import Modal from "./Modal";
+import "../Styles/People.css";
+import trash from "../Images/trash.png";
 
-const departmentKeys = ["civil", "mechanical", "electrical", "ccs"];
+const departmentKeys = ["deans", "associate_deans", "faculty_in_charge", "staff"];
 
 function People() {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingProfileId, setEditingProfileId] = useState(null);
-  const [adding, setAdding] = useState(false); 
+  const [adding, setAdding] = useState(false);
   const [newProfileData, setNewProfileData] = useState({
-    name: '',
-    role: '',
-    title: '',
-    email: '',
-    website: '',
-    photo: '',
-    researchAreas: '',
+    name: "",
+    role: "",
+    title: "",
+    email: "",
+    website: "",
+    photo: "",
+    responsibilities: "",
   });
   const [photoFile, setPhotoFile] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const { user } = useAuth();
-const token = user?.token;
- 
+  const token = user?.token;
 
   const sectionRefs = {
-    civil: useRef(null),
-    mechanical: useRef(null),
-    electrical: useRef(null),
-    ccs: useRef(null),
+    Deans: useRef(null),
+    associate_deans: useRef(null),
+    faculty_in_charge: useRef(null),
+    staff: useRef(null),
   };
 
   useEffect(() => {
@@ -55,6 +57,7 @@ const token = user?.token;
       prev.map((p) => (p._id === updatedProfile._id ? updatedProfile : p))
     );
   };
+
   const handleNewProfileChange = (e) => {
     setNewProfileData({ ...newProfileData, [e.target.name]: e.target.value });
   };
@@ -65,55 +68,39 @@ const token = user?.token;
 
   const handleAddProfileSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-  
+    setError("");
+
     if (!token) {
-      setError('You must be logged in as admin to add profiles.');
+      setError("You must be logged in as admin to add profiles.");
       return;
     }
-  
+
     try {
       const formData = new FormData();
-      formData.append('name', newProfileData.name);
-      formData.append('role', newProfileData.role);
-      formData.append('title', newProfileData.title);
-      formData.append('email', newProfileData.email);
-      formData.append('website', newProfileData.website);
-      formData.append('researchAreas', newProfileData.researchAreas);
-      if (photoFile) formData.append('photo', photoFile);
-  
-      const res = await fetch('http://localhost:5001/api/people', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,  // Do NOT set Content-Type header here
-        },
+      for (const key in newProfileData) formData.append(key, newProfileData[key]);
+      if (photoFile) formData.append("photo", photoFile);
+
+      const res = await fetch("http://localhost:5001/api/people", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-  
+
       if (!res.ok) {
-        let errMsg = 'Failed to add profile';
-        const contentType = res.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          const err = await res.json();
-          errMsg = err.error || err.message || errMsg;
-        } else {
-          const text = await res.text();
-          errMsg = text || errMsg;
-        }
-        throw new Error(errMsg);
+        const err = await res.json();
+        throw new Error(err.error || "Failed to add profile");
       }
-      
-  
+
       const addedProfile = await res.json();
       setProfiles((prev) => [...prev, addedProfile]);
       setNewProfileData({
-        name: '',
-        role: '',
-        title: '',
-        email: '',
-        website: '',
-        photo: '',
-        researchAreas: '',
+        name: "",
+        role: "",
+        title: "",
+        email: "",
+        website: "",
+        photo: "",
+        responsibilities: "",
       });
       setPhotoFile(null);
       setAdding(false);
@@ -121,146 +108,166 @@ const token = user?.token;
       setError(err.message);
     }
   };
-  
 
   return (
-    <div>
-       {user?.role === "admin" && (
-        <div style={{ marginBottom: "20px" }}>
+    <div className="people-container">
+      {user?.role === "admin" && (
+        <div className="add-section">
           {!adding ? (
-            <button onClick={() => setAdding(true)}>Add New Profile</button>
+            <button className="add-btn" onClick={() => setAdding(true)}>
+              + Add New Profile
+            </button>
           ) : (
-            <form onSubmit={handleAddProfileSubmit} style={{ padding: '10px', border: '1px solid #ccc', marginTop: '10px' }}>
-              {error && <p style={{ color: 'red' }}>{error}</p>}
-              <input
-                name="name"
-                placeholder="Name"
-                value={newProfileData.name}
-                onChange={handleNewProfileChange}
-                required
-              />
-              <input
-                name="role"
-                placeholder="Role"
-                value={newProfileData.role}
-                onChange={handleNewProfileChange}
-                required
-              />
-              <input
-                name="title"
-                placeholder="Title"
-                value={newProfileData.title}
-                onChange={handleNewProfileChange}
-              />
-              <input
-                name="email"
-                placeholder="Email"
-                value={newProfileData.email}
-                onChange={handleNewProfileChange}
-              />
-              <input
-                name="website"
-                placeholder="Website"
-                value={newProfileData.website}
-                onChange={handleNewProfileChange}
-              />
-               <input
-                type="file"
-                name="photo"
-                accept="image/*"
-                onChange={handlePhotoChange}
-              />
-              <input
-                name="researchAreas"
-                placeholder="Research Areas"
-                value={newProfileData.researchAreas}
-                onChange={handleNewProfileChange}
-              />
-              <div style={{ marginTop: "10px" }}>
-                <button type="submit">Add Profile</button>
-                <button type="button" onClick={() => setAdding(false)} style={{ marginLeft: "10px" }}>Cancel</button>
-              </div>
-            </form>
+            <Modal onClose={() => setAdding(false)}>
+              <form onSubmit={handleAddProfileSubmit} className="add-form">
+                {error && <p className="error">{error}</p>}
+                {Object.keys(newProfileData).map((key) => {
+  if (key === "photo") return null;
+
+  if (key === "role") {
+    return (
+      <select
+        key={key}
+        name={key}
+        value={newProfileData[key]}
+        onChange={handleNewProfileChange}
+        required
+      >
+        <option value="">Select Department</option>
+        <option value="deans">Deans</option>
+        <option value="associate_deans">Associate Deans</option>
+        <option value="faculty_in_charge">Faculty In-Charge</option>
+        <option value="staff">Staff</option>
+      </select>
+    );
+  }
+
+  return (
+    <input
+      key={key}
+      name={key}
+      placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+      value={newProfileData[key]}
+      onChange={handleNewProfileChange}
+      required={key === "name"}
+    />
+  );
+})}
+
+                <input
+                  type="file"
+                  name="photo"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                />
+                <div className="form-btns">
+                  <button type="submit">Add</button>
+                  <button type="button" onClick={() => setAdding(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </Modal>
           )}
         </div>
       )}
+
       <PeopleCategories onCategorySelect={handleCategorySelect} />
+
       {loading ? (
-        <div>Loading...</div>
+        <div className="loading">Loading...</div>
       ) : (
         departmentKeys.map((key) => (
-          <div key={key} ref={sectionRefs[key]} style={{ marginTop: "45px" }}>
-            <h2 style={{ color: "#1a2958" }}>
-              {key.charAt(0).toUpperCase() + key.slice(1)} Department
-            </h2>
-            <div className="prof" style={{ display: "grid", gap: "20px", gridTemplateColumns: "550px 550px" }}>
-            {byRole(key).length === 0 ? (
-              <div>No members found.</div>
-            ) : (
-              byRole(key).map((profile) => (
-                <div
-                  key={profile._id}
-                  style={{
-                    boxShadow: "0px 0px 10px lightgray",
-                    width: "550px",
-                    padding: "10px",
-                    margin: "10px",
-                    display: "flex",
-                    gap: "20px",
-                    alignItems: "left",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-                  {profile.photo ? (
-  <img
-  src={profile.photo ? `http://localhost:5001${profile.photo}` : null}
-    alt={`Profile of ${profile.name}`}
-    style={{ width: "170px", height: "220px", objectFit: "cover", borderRadius: "8px" }}
-  />
-) : (
-  <div style={{
-    width: "170px",
-    height: "220px",
-    backgroundColor: "#ccc",
-    borderRadius: "8px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#666",
-  }}>
-    No photo
-  </div>
-)}
+          <div key={key} ref={sectionRefs[key]} className="department-section">
+            <h2 className="dept-title">
+  {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} 
+</h2>
 
-                    <div>
-                      <h3>{profile.name}</h3>
-                      <p>{profile.title}</p>
-                      <p>{profile.researchAreas}</p>
-                      <a href={`mailto:${profile.email}`}>{profile.email}</a>
-                      <br />
-                      <a href={profile.website} target="_blank" rel="noopener noreferrer">
-                        Website
-                      </a>
+            <div className="profiles-grid">
+              {byRole(key).length === 0 ? (
+                <div className="empty">No members found.</div>
+              ) : (
+                byRole(key).map((profile) => (
+                  <div className="profile-card" key={profile._id}>
+                    <div className="profile-info">
+                      {profile.photo ? (
+                        <img
+                          src={`http://localhost:5001${profile.photo}`}
+                          alt={profile.name}
+                          className="profile-photo"
+                        />
+                      ) : (
+                        <div className="photo-placeholder">No photo</div>
+                      )}
+
+                      <div className="profile-text">
+                        <h3>{profile.name}</h3>
+                        <p>{profile.title}</p>
+                        <p>{profile.responsibilities}</p>
+                        <a href={`mailto:${profile.email}`}>{profile.email}</a>
+                        <br />
+                        <a
+                          href={profile.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                        
+                        </a>
+                      </div>
                     </div>
+
+                    {user?.role === "admin" && (
+                      <div className="admin-actions">
+                        <button
+                          className="edit-btn"
+                          onClick={() => setEditingProfileId(profile._id)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="delete-btn"
+                          onClick={async () => {
+                            const confirmed = window.confirm(
+                              `Delete ${profile.name}?`
+                            );
+                            if (!confirmed) return;
+
+                            try {
+                              const res = await fetch(
+                                `http://localhost:5001/api/people/${profile._id}`,
+                                {
+                                  method: "DELETE",
+                                  headers: { Authorization: `Bearer ${token}` },
+                                }
+                              );
+                              if (!res.ok) throw new Error("Failed to delete");
+                              setProfiles((prev) =>
+                                prev.filter((p) => p._id !== profile._id)
+                              );
+                              alert("Profile deleted!");
+                            } catch (err) {
+                              alert(err.message);
+                            }
+                          }}
+                        >
+                          <img src={trash} alt="Delete" />
+                        </button>
+                      </div>
+                    )}
+
+                    {editingProfileId === profile._id && (
+                      <Modal onClose={() => setEditingProfileId(null)}>
+                        <EditProfile
+                          profileId={profile._id}
+                          onClose={() => setEditingProfileId(null)}
+                          onUpdate={handleUpdateProfile}
+                        />
+                      </Modal>
+                    )}
                   </div>
-                  {user?.role === "admin" && (
-                    <button style={{ marginTop: "10px" }} onClick={() => setEditingProfileId(profile._id)}>
-                      Edit
-                    </button>
-                  )}
-                  {editingProfileId === profile._id && (
-                    <EditProfile
-                      profileId={profile._id}
-                      onClose={() => setEditingProfileId(null)}
-                      onUpdate={handleUpdateProfile}
-                    />
-                  )}
-                </div>
-                
-              ))
-            )}
-          </div>
+                ))
+              )}
+            </div>
           </div>
         ))
       )}

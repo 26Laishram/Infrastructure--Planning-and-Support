@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const uri = "mongodb+srv://munglem:key1board23@cluster0.i6h8hoe.mongodb.net/test";
+const uri = "mongodb+srv://ipswebsite:ipswebsite@cluster0.4yx435c.mongodb.net/";
 
 mongoose.connect(uri)
   .then(() => console.log("✅ Connected to MongoDB Atlas"))

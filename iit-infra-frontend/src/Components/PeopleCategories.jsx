@@ -1,39 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
+import "../Styles/PeopleCategories.css";
 
 const categories = [
-  { key: "civil", label: "Civil" },
-  { key: "mechanical", label: "Mechanical" },
-  { key: "electrical", label: "Electrical" },
-  { key: "ccs", label: "CCS" },
+  { key: "deans", label: "Deans" },
+  { key: "associate_deans", label: "Associate Deans" },
+  { key: "faculty_in_charge", label: "Faculty In-Charge" },
+  { key: "staff", label: "Staff" },
 ];
 
 function PeopleCategories({ onCategorySelect }) {
   return (
-    <div >
-      <h2 style={{ fontSize: "2rem", fontWeight: 700, color: "#1a2958" , margin: "0px" }}>People</h2>
-      <p style={{ fontSize: "1rem", color: "#516080", marginBottom: "30px", marginTop: "0px" }}>
-        Meet faculty and staff of Civil, Mechanical, Electrical, and CCS departments.
+    <div className="people-container">
+      <h2 className="people-title">People</h2>
+      <p className="people-description">
+        Meet faculty and staff of Deans, Associate Deans, Faculty In-Charge, and Staff departments.
       </p>
-      <div style={{ display: "flex", gap: "30px", justifyContent: "flex-start", flexWrap: "wrap" }}>
-        {categories.map(c => (
+
+      <div className="people-grid">
+        {categories.map((c) => (
           <div
             key={c.key}
-            style={{
-              background: "#fff",
-              width: "260px",
-              height: "120px",
-              padding: "28px 0",
-              borderRadius: "18px",
-              boxShadow: "0 4px 20px rgba(60, 60, 90, 0.12)",
-              textAlign: "center",
-              cursor: "pointer"
-            }}
+            className="people-card"
             onClick={() => onCategorySelect(c.key)}
           >
-            <h3 style={{ fontSize: "2rem", fontWeight: 700, color: "#1a2958", margin: "0" }}>{c.label}</h3>
-            <div style={{ fontSize: "1rem", color: "#3d4956", marginTop: "5px" }}>
-              View Members
-            </div>
+            <h3 className="people-card-title">{c.label}</h3>
+            <div className="people-card-subtitle">View Members</div>
           </div>
         ))}
       </div>

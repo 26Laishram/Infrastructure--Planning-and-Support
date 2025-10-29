@@ -23,7 +23,7 @@ const upload = multer({
     if (!file.mimetype.startsWith('image/')) cb(new Error('Only images allowed!'));
     else cb(null, true);
   },
-  limits: { fileSize: 2 * 1024 * 1024 }
+  limits: { fileSize: 10 * 1024 * 1024 }
 });
 
 // GET all profiles (optional filter by role)
@@ -76,5 +76,31 @@ router.put('/:id', authenticateToken, requireAdmin, upload.single('photo'), asyn
     res.status(500).json({ error: err.message });
   }
 });
+
+// DELETE profile by ID (Admin only)
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const profile = await Profile.findById(id);
+    if (!profile) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+
+    // Delete photo from server if exists
+    if (profile.photo) {
+      const photoPath = path.join(process.cwd(), profile.photo.startsWith('/') ? profile.photo.slice(1) : profile.photo);
+      if (fs.existsSync(photoPath)) fs.unlinkSync(photoPath);
+    }
+
+    await Profile.findByIdAndDelete(id);
+    return res.json({ message: "Profile deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 export default router;

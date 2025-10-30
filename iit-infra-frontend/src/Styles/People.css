@@ -70,8 +70,7 @@
   .profiles-grid {
     display: grid;
     gap: 20px;
-    /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
-    grid-template-columns: 550px 550px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
   
   /* ✅ Profile card */
@@ -175,4 +174,9 @@
       font-size: 1.3rem;
     }
   }
+  @media (min-width: 1024px) {
+    .profiles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
  

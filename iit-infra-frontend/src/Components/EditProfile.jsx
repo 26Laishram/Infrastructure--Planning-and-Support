@@ -55,7 +55,6 @@ function EditProfile({ profileId, onClose, onUpdate }) {
       if (photoFile) data.append("photo", photoFile);
 
       const token = user?.token;
-      console.log("Token:", user?.token);
 
       const res = await fetch(`http://localhost:5001/api/people/${profileId}`, {
         method: "PUT",

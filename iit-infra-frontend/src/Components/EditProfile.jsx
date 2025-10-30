@@ -20,7 +20,7 @@ function EditProfile({ profileId, onClose, onUpdate }) {
 
   // Fetch existing profile
   useEffect(() => {
-    fetch(`/api/people/${profileId}`)
+    fetch(`http://localhost:5001/api/people/${profileId}`)
       .then(res => res.json())
       .then(profile => {
         setFormData(profile);
@@ -57,7 +57,7 @@ function EditProfile({ profileId, onClose, onUpdate }) {
       const token = user?.token;
       console.log("Token:", user?.token);
 
-      const res = await fetch(`/api/people/${profileId}`, {
+      const res = await fetch(`http://localhost:5001/api/people/${profileId}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

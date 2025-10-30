@@ -1,33 +1,3 @@
-/* App.css
-
-.app-container {
-  display: flex;
-    min-height: 87vh;
-    background-color: #f9fafb;
-    color: #1f2937;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    min-width: 100vw;
-    max-width: 100vw;
-    position: absolute;
-    bottom: 0px;
-}
-
-.main-content {
-  
-  padding: 2rem;
-  margin-left: 250px; 
-}*/
-
-/* .top-bar{
-  position: absolute;
-  top: 0;
-  left: 10px;
-  display: flex;
-  height: 80px;
-  gap: 260px;
-  border: 1px solid lightgray;
-} */
-
 .top-bar h2{
   color: black;
 }
@@ -40,7 +10,6 @@ body {
 } 
 
 
-/* Reset & base */
 * {
   box-sizing: border-box;
 }
@@ -85,7 +54,6 @@ body, html, #root {
   border-right: 1px solid #e0e0e0;
   background-color: #fff;
   position: fixed;
-  top: 60px;
   left: 0;
   bottom: 0;
   z-index: 900;
@@ -101,3 +69,82 @@ body, html, #root {
   flex-grow: 1;
   color: black;
 }
+
+.mobile-menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  background: black;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+/* Show menu button only on mobile */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  .top-bar img {
+    width: 120px;
+  }
+
+  .top-bar h2 {
+    font-size: 14px;
+  }
+}
+/* Mobile: hide sidebar by default, show when .show is present */
+@media (max-width: 768px) {
+  .sidebar-container {
+    position: fixed;
+    /* top: 70px; */
+    left: 0;
+    height: calc(100% - 70px);
+    width: 220px;            /* sidebar width on mobile */
+    transform: translateX(-100%);
+    transition: transform 0.25s ease-in-out;
+    z-index: 999;
+    background: #fff;
+  }
+
+  /* when visible */
+  .sidebar-container.show {
+    transform: translateX(0);
+  }
+
+  /* main content occupies full width by default */
+  .main-content {
+    margin-left: 0 !important;
+    transition: margin-left 0.25s ease-in-out;
+  }
+
+  /* shift content when sidebar is open */
+  .app-body.sidebar-open .main-content {
+    margin-left: 220px; /* same as sidebar width */
+  }
+
+  /* small adjustment for the header logo/title */
+  .top-bar img {
+    width: 120px;
+  }
+
+  .top-bar h2 {
+    font-size: 14px;
+    margin-left: 8px;
+    text-align: center;
+  }
+}
+
+/* optional: keep desktop behaviour unchanged */
+@media (min-width: 769px) {
+  .sidebar-container {
+    transform: translateX(0);
+    position: fixed;
+  }
+
+  .main-content {
+    margin-left: 250px; /* keep matching your current sidebar width */
+  }
+}
+
+

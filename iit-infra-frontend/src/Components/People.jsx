@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import PeopleCategories from "./PeopleCategories";
 import EditProfile from "./EditProfile";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from './AuthProvider'; 
 import Modal from "./Modal";
 import "../Styles/People.css";
-import trash from "../Images/trash.png";
+import trash from "../Images/trash.png"; 
 
 const departmentKeys = ["deans", "associate_deans", "faculty_in_charge", "staff"];
 
@@ -36,7 +36,7 @@ function People() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5001/api/people")
+    fetch("/api/people")
       .then((res) => res.json())
       .then((data) => {
         setProfiles(data);
@@ -80,7 +80,7 @@ function People() {
       for (const key in newProfileData) formData.append(key, newProfileData[key]);
       if (photoFile) formData.append("photo", photoFile);
 
-      const res = await fetch("http://localhost:5001/api/people", {
+      const res = await fetch("/api/people", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -101,7 +101,6 @@ function People() {
         website: "",
         photo: "",
         responsibilities: "",
-      });
       setPhotoFile(null);
       setAdding(false);
     } catch (err) {
@@ -161,12 +160,12 @@ function People() {
                   onChange={handlePhotoChange}
                 />
                 <div className="form-btns">
-                  <button type="submit">Add</button>
+                 <button type="submit">Add</button>
                   <button type="button" onClick={() => setAdding(false)}>
                     Cancel
                   </button>
                 </div>
-              </form>
+              </form> 
             </Modal>
           )}
         </div>
@@ -178,6 +177,7 @@ function People() {
         <div className="loading">Loading...</div>
       ) : (
         departmentKeys.map((key) => (
+<<<<<<< HEAD
           <div key={key} ref={sectionRefs[key]} className="department-section">
             <h2 className="dept-title">
   {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} 
@@ -192,7 +192,7 @@ function People() {
                     <div className="profile-info">
                       {profile.photo ? (
                         <img
-                          src={`http://localhost:5001${profile.photo}`}
+                          src={`${profile.photo}`}
                           alt={profile.name}
                           className="profile-photo"
                         />
@@ -214,6 +214,7 @@ function People() {
                         
                         </a>
                       </div>
+ 
                     </div>
 
                     {user?.role === "admin" && (
@@ -234,7 +235,7 @@ function People() {
 
                             try {
                               const res = await fetch(
-                                `http://localhost:5001/api/people/${profile._id}`,
+                                `/api/people/${profile._id}`,
                                 {
                                   method: "DELETE",
                                   headers: { Authorization: `Bearer ${token}` },

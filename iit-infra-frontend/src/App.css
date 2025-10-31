@@ -20,38 +20,29 @@ body, html, #root {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   width: 100%;
 }
-
-/* Fixed top header */
 .top-bar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 70px;
-  /* color: white; */
   display: flex;
   gap: 260px;
   align-items: center;
   padding: 0 20px;
   font-weight: 700;
   z-index: 1000;
-  /* border: 1px solid lightgray; */
   box-shadow: 0px 0px 6px lightgray;
 }
-
-/* App body below header */
 .app-body {
   display: flex;
-  height: calc(100vh - 60px);
-  margin-top: 60px; /* height of header */
+  height: calc(100vh - 80px);
+  margin-top: 80px;
 }
-
-/* Sidebar container - scrollable */
 .sidebar-container {
   width: 250px;
   height: 100%;
   overflow-y: auto;
-  border-right: 1px solid #e0e0e0;
   background-color: #fff;
   position: fixed;
   left: 0;
@@ -59,13 +50,11 @@ body, html, #root {
   z-index: 900;
 }
 
-/* Main content - scrollable */
 .main-content {
   margin-left: 250px;
   padding: 20px;
   height: 100%;
   overflow-y: auto;
-  /* background-color: #f9fafb; */
   flex-grow: 1;
   color: black;
 }
@@ -78,8 +67,6 @@ body, html, #root {
   cursor: pointer;
   padding: 6px;
 }
-
-/* Show menu button only on mobile */
 @media (max-width: 768px) {
   .mobile-menu-toggle {
     display: block;
@@ -93,37 +80,29 @@ body, html, #root {
     font-size: 14px;
   }
 }
-/* Mobile: hide sidebar by default, show when .show is present */
 @media (max-width: 768px) {
   .sidebar-container {
     position: fixed;
-    /* top: 70px; */
     left: 0;
     height: calc(100% - 70px);
-    width: 220px;            /* sidebar width on mobile */
+    width: 220px;
     transform: translateX(-100%);
     transition: transform 0.25s ease-in-out;
     z-index: 999;
     background: #fff;
   }
 
-  /* when visible */
   .sidebar-container.show {
     transform: translateX(0);
   }
 
-  /* main content occupies full width by default */
   .main-content {
     margin-left: 0 !important;
     transition: margin-left 0.25s ease-in-out;
   }
-
-  /* shift content when sidebar is open */
   .app-body.sidebar-open .main-content {
-    margin-left: 220px; /* same as sidebar width */
+    margin-left: 220px;
   }
-
-  /* small adjustment for the header logo/title */
   .top-bar img {
     width: 120px;
   }
@@ -135,7 +114,6 @@ body, html, #root {
   }
 }
 
-/* optional: keep desktop behaviour unchanged */
 @media (min-width: 769px) {
   .sidebar-container {
     transform: translateX(0);
@@ -143,7 +121,7 @@ body, html, #root {
   }
 
   .main-content {
-    margin-left: 250px; /* keep matching your current sidebar width */
+    margin-left: 250px;
   }
 }
 

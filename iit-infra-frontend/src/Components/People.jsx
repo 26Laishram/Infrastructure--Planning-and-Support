@@ -36,7 +36,7 @@ function People() {
   };
 
   useEffect(() => {
-    fetch("/api/people")
+    fetch("http://localhost:5001/api/people")
       .then((res) => res.json())
       .then((data) => {
         setProfiles(data);
@@ -80,7 +80,7 @@ function People() {
       for (const key in newProfileData) formData.append(key, newProfileData[key]);
       if (photoFile) formData.append("photo", photoFile);
 
-      const res = await fetch("/api/people", {
+      const res = await fetch("http://localhost:5001/api/people", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -100,7 +100,7 @@ function People() {
         email: "",
         website: "",
         photo: "",
-        responsibilities: ""
+        responsibilities: "",
       })
       setPhotoFile(null);
       setAdding(false);
@@ -192,7 +192,7 @@ function People() {
                     <div className="profile-info">
                       {profile.photo ? (
                         <img
-                          src={`${profile.photo}`}
+                          src={`http://localhost:5001${profile.photo}`}
                           alt={profile.name}
                           className="profile-photo"
                         />
@@ -234,7 +234,7 @@ function People() {
                             if (!confirmed) return;
 
                             try {
-                              const res = await fetch(`api/people/${profile._id}`,
+                              const res = await fetch(`http://localhost:5001/api/people/${profile._id}`,
                                 {
                                   method: "DELETE",
                                   headers: { Authorization: `Bearer ${token}` },

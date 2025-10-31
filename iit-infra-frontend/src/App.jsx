@@ -14,27 +14,21 @@ import Home from "./Components/Home.jsx";
 const UserDashboard = () => <h1>Admin Dashboard - Protected User Section</h1>;
 
 function App() {
-  // <-- added state here
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
       <AuthProvider>
         <Router>
-          {/* pass toggle and current state to header so it can show the menu button */}
           <HeaderWithLogout
             logo={logo}
             toggleSidebar={() => setSidebarOpen(prev => !prev)}
             sidebarOpen={sidebarOpen}
           />
-
-          {/* wrap body; add class when sidebarOpen to shift main content */}
           <div className={`app-body ${sidebarOpen ? "sidebar-open" : ""}`}>
             <aside className={`sidebar-container ${sidebarOpen ? "show" : ""}`}>
               <Sidebar />
             </aside>
-
-            {/* clicking on the main area will close the sidebar on mobile */}
             <main className="main-content" onClick={() => sidebarOpen && setSidebarOpen(false)}>
               <Routes>
                 <Route path="/" element={<Home />} />

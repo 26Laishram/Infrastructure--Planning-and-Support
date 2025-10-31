@@ -17,8 +17,6 @@ function EditProfile({ profileId, onClose, onUpdate }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  // Fetch existing profile
   useEffect(() => {
     fetch(`http://localhost:5001/api/people/${profileId}`)
       .then(res => res.json())
@@ -84,8 +82,6 @@ function EditProfile({ profileId, onClose, onUpdate }) {
     <form onSubmit={handleSubmit} style={{ border: "1px solid #ccc", padding: "20px", margin: "15px 0" }}>
       <h3>Edit Profile</h3>
       {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {/* Photo preview */}
       <div style={{ marginBottom: "10px" }}>
         {previewUrl ? (
           <img
@@ -95,7 +91,7 @@ function EditProfile({ profileId, onClose, onUpdate }) {
           />
         ) : formData.photo ? (
           <img
-            src={`${formData.photo}`}
+            src={`http://localhost:5001/${formData.photo}`}
             alt={`Profile of ${formData.name}`}
             style={{ width: "170px", height: "220px", objectFit: "cover", borderRadius: "8px" }}
           />
@@ -115,10 +111,7 @@ function EditProfile({ profileId, onClose, onUpdate }) {
         )}
       </div>
       <div className="addpho">
-      {/* <label>Name</label> */}
       <input placeholder="Name" name="name" value={formData.name} onChange={handleChange} required />
-
-      {/* <label>Title</label> */}
       <input placeholder="Title" name="title" value={formData.title} onChange={handleChange} />
       <select
           name="role"
@@ -132,20 +125,12 @@ function EditProfile({ profileId, onClose, onUpdate }) {
           <option value="faculty_in_charge">Faculty In-Charge</option>
           <option value="staff">Staff</option>
         </select>
-
-      {/* <label>Email</label> */}
       <input placeholder="Email" name="email" value={formData.email} onChange={handleChange} />
-
-      {/* <label>Website</label> */}
       <input placeholder="Website" name="website" value={formData.website} onChange={handleChange} />
-
-      {/* <label>Research Areas</label> */}
       <textarea placeholder="Responsilibity" name="responsibilities" value={formData.responsibilities} onChange={handleChange} />
-
       <label>Upload New Photo</label>
       <input type="file" accept="image/*" onChange={handlePhotoChange} />
       </div>
-
       <div style={{ marginTop: "10px" }}>
         <button type="submit">Save</button>
         <button type="button" onClick={onClose} style={{ marginLeft: "10px" }}>Cancel</button>

@@ -19,7 +19,7 @@ const LoginPage = () => {
       .then(data => {
         if (data.token) {
           login({ username, role: data.role, token: data.token });
-          navigate('/user'); // redirect to user dashboard or page
+          navigate('/user');
         } else {
           alert('Login failed');
         }

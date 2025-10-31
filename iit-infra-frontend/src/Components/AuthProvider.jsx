@@ -1,12 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-// Simple context to store auth state (user token + role)
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
-  // Simulate loading user info from localStorage on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');

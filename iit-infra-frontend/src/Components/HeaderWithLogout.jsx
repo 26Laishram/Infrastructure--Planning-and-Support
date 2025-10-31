@@ -8,8 +8,6 @@ const HeaderWithLogout = ({ logo, toggleSidebar, sidebarOpen }) => {
     <header className="top-bar" 
       style={{ display: 'flex', alignItems: 'center', gap: '20px', justifyContent: 'space-between', padding: '10px 15px'}}
     >
-
-      {/* Mobile Menu Button */}
       <button 
         className="mobile-menu-toggle"
         onClick={toggleSidebar}

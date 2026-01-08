@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PageSkeleton from '../components/PageSkeleton';
+import PageSkeleton from './PageSkeleton';
 import { Link } from 'react-scroll';
 
 const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes cache expiry
@@ -14,7 +14,7 @@ export default function Forms() {
   const loadData = async () => {
     try {
       const response = await axios.get(
-        'https://opensheet.vercel.app/1J5-BDOrjaxf-TS7OwWpXaFXBhSHy1vW-i7WmJhcY_4M/Sheet1'
+        'https://opensheet.vercel.app/1DKZ5V2yOgGqSze5d0Yt6g881X6tBZ19qoJl8J2-Kh9w/Forms'
       );
       console.log("✅ Google Sheet Response:", response.data);
       setFormData(Array.isArray(response.data) ? response.data : []);
@@ -35,7 +35,7 @@ export default function Forms() {
       <h1 className="text-3xl sm:text-3xl font-bold mb-4 text-center">IPS Forms</h1>
       <div className="mb-4 text-center">
         <a
-          href="https://drive.google.com/drive/u/2/folders/1EQ8rYC1ccBZHYn7UreO3Pn9TIUoCHF_Y"
+          href="https://intranet.iitdh.ac.in:444/ips.php"
           target="_blank"
           rel="noopener noreferrer"
           className="underline hover:text-purple-900 text-purple-700 text-sm sm:text-base font-medium"

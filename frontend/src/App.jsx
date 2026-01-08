@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import logo from "./Images/institute-logo.png";
 import People from "./Components/People.jsx";
-import { AuthProvider } from "./Components/AuthProvider.jsx";
-import ProtectedRoute from "./Components/ProtectedRoute.jsx";
-import LoginPage from "./Components/LoginPage.jsx";
-import RegistrationPage from "./Components/RegistrationPage.jsx";
 import HeaderWithLogout from "./Components/HeaderWithLogout.jsx";
 import Home from "./Components/Home.jsx";
 import Forms from "./Components/forms.jsx";
 import Sidebar from "./Components/Sidebar.jsx";
 import Navbar from "./Components/Navbar.jsx";
+import Footer from "./Components/Footer/Footer.jsx"
+import PageSkeleton from "./Components/PageSkeleton.jsx";
+import Building from './Components/Building.jsx';
+import Tender from './Components/Tender.jsx';
+import ProjectCommittee from './Components/ProjectCommitte.jsx';
+
+
+
+const Deans = lazy(() => import('./Components/deans.jsx'));
+const Feedback=lazy(()=>import('./Components/feedback.jsx'))
+const Documents=lazy(()=>import('./Components/Documents.jsx'))
+
 
 
 
@@ -62,42 +70,50 @@ function App() {
           <div className="max-w-full overflow-x-hidden flex-grow">
             {/* Scroll restoration */}
             <ScrollToTop />
-            <AuthProvider>
                   <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<LoginPage />} />
                     <Route path="/people" element={<People />} />
                     <Route
                       path="/user/*"
                       element={
-                        <ProtectedRoute>
                           <UserDashboard />
-                        </ProtectedRoute>
                       }
                     />
-                    <Route path="/register" element={<RegistrationPage />} />
-                    <Route path="/Documents" element={<div>Documents Page</div>} />
+                    <Route path="/Documents" element={<Documents/>} />
                     <Route path="/statistics/usage" element={<div>Statistics Usage</div>} />
                     <Route
                       path="/statistics/performance"
                       element={<div>Statistics Performance</div>}
                     />
                     <Route
-                      path="/committees/academic"
-                      element={<div>Academic Committees</div>}
+                      path="/committees/building"
+                      element={<Building />}
                     />
                     <Route
-                      path="/committees/administrative"
-                      element={<div>Administrative Committees</div>}
+                      path="/committees/tender1B"
+                      element={<Tender />}
                     />
-                    <Route path="/forms" element={<Forms />} />
+                    <Route
+                      path="/committees/project"
+                      element={<ProjectCommittee />}
+                    />
+                    <Route path="/forms" element={
+                <Suspense fallback={<PageSkeleton />}>
+                  <Forms />
+                </Suspense>
+              } /> 
                     <Route path="/research-areas" element={<div>Research Areas</div>} />
-                    <Route path="/deans" element={<div>Deans Page</div>} />
-                    <Route path="/feedback" element={<div>Feedback Page</div>} />
+                    <Route path="/deans" element={
+                <Suspense fallback={<PageSkeleton />}>
+                  <Deans />
+                </Suspense>
+              } />
+                    <Route path="/feedback" element={<Feedback/>} />
                   </Routes>
-            </AuthProvider>
           </div>
+             <Footer/>
         </div>
+     
       </div>
     </div>
   );

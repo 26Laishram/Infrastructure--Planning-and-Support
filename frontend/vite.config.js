@@ -14,4 +14,5 @@ export default defineConfig({
     port: 5173,                // optional if you’re using 5173
     allowedHosts: ['ips.iitdh.ac.in'],  // 👈 add your hostname here
   },
+  
 })

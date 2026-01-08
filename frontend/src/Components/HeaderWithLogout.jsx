@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import { useAuth } from "./AuthProvider";
-import LogoutButton from "./LogoutButton";
 import { useNavigate } from "react-router-dom";
 import logo from "../Images/institute-logo.png";
 
 export default function HeaderWithLogout({ toggleMobileMenu, isMobileMenuOpen }) {
 
 
-  const auth = useAuth();
-  const user = auth?.user;
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,8 +92,6 @@ export default function HeaderWithLogout({ toggleMobileMenu, isMobileMenuOpen })
             className="py-[0.4rem] px-[0.8rem] border border-[#e0e0ff] rounded-full text-[0.85rem] bg-white/70 w-[150px] md:w-[180px] transition-all duration-200 focus:outline-none focus:border-[#d0d0ff] focus:shadow focus:shadow-[#d0d0ff]/40 focus:w-[200px]"
           />
         </div>
-
-        {user && <LogoutButton />}
       </div>
     </header>
   );
